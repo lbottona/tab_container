@@ -398,17 +398,23 @@ class _TabContainerState extends AnimatedWidgetBaseState<TabContainer> {
           0.0,
       radius: widget.radius,
       child: Padding(
-          padding: widget.childPadding,
-          child: ListView.builder(
+        padding: widget.childPadding,
+        child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: widget.children.length,
             itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () => _controller?.jumpTo(index),
-                child: widget.children[index],
+              return AnimatedSwitcher(
+                duration: widget.childDuration!,
+                switchInCurve: widget.childCurve!,
+                transitionBuilder: widget.transitionBuilder ??
+                    AnimatedSwitcher.defaultTransitionBuilder,
+                child: IndexedStack(
+                  key: ValueKey<int>(_currentIndex),
+                  index: _currentIndex,
+                  children: widget.children,
+                ),
               );
-            },
-          )),
+            }),
+      ),
       tabs: _getTabs(),
       tabExtent: _tabExtent,
       tabEdge: widget.tabEdge,
